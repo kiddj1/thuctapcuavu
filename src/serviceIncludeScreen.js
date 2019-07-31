@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Modal, Text, TouchableHighlight, View, Alert, TouchableOpacity, Image, FlatList, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Animatable from 'react-native-animatable';
-
+import ModalNew from 'react-native-modal'
 export default class ServiceInclude extends Component {
 
   constructor(props) {
@@ -10,6 +10,7 @@ export default class ServiceInclude extends Component {
     this.previousAcceptOption = null;
   }
   state = {
+    isVisible: false,
     modalVisible: false,
     reload: false,
     cafePress: false,
@@ -87,7 +88,9 @@ export default class ServiceInclude extends Component {
       }else{
         this.state.optionCatering[data].picked = !this.state.optionCatering[data].picked
         console.log(this.state.optionCatering[data].picked)
-        this.setState(this.state.optionCatering);
+
+        // this.setState({isVisible: true})
+        this.setState({optionCatering: this.state.optionCatering, isVisible: true});
       }
   }
 
@@ -111,10 +114,32 @@ export default class ServiceInclude extends Component {
       this.props.servicePicked(servicePicked);
       this.setModalVisible(false);
   }
-
+  
   render() {
     return (
       <View style={{}}>
+                <ModalNew
+                    isVisible={this.state.isVisible}
+                    onBackButtonPress={() => this.setState({isVisible: false})}
+                    onBackdropPress={() => this.setState({isVisible: false})}
+                    animationOut={'fadeOut'}
+                    animationIn={'zoomIn'}
+                    animationInTiming={500}
+                    style={{margin: 0}}
+                >
+                  <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{width: '80%', height: '70%',backgroundColor: 'white'}}>
+                      <View style={{flexDirection: 'row', alignItems: 'center', paddingVertical: 10}}>
+                        <Image
+                          style={{width: 50, height: 50}}
+                          source={{uri: 'https://media-ak.static-adayroi.com/sys_master/hff/he4/10303794774046.jpg'}}
+                        /> 
+
+                        <Text>Fanta {"\n"}330ml</Text>
+                      </View>
+                    </View>
+                  </View>
+                </ModalNew>
         <Modal
           animationType="slide"
           transparent={true}

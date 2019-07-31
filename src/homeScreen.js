@@ -59,6 +59,7 @@ export default class Home extends Component {
         this.idRoomReview = null;
         this.channel = null;
         this.notification = null;
+        this.idBooking = null;
     }
 
     componentWillMount () {
@@ -137,7 +138,7 @@ export default class Home extends Component {
             sort = []
             e.bookTime.map((eB,iB) => {
                 // console.log(eB)
-                if(eB.endTime > moment().valueOf()){
+                if(eB.endTime > moment().valueOf() && eB.cancel != 'true'){
                     sort.push(eB)
                 }
                 if(iB == e.bookTime.length - 1) {
@@ -186,6 +187,7 @@ export default class Home extends Component {
                                     this.idRoomReview = idRoom;
                                     this.nameRoomReview = e.name;
                                     this.imgRoomReview = e.imgRoom;
+                                    this.idBooking = e.idBooking;
                                     firebase.notifications().displayNotification(this.notification)
                                     this.setState({popUpOnTime: true, stateTextPopUp: 'Đã tới giờ họp'});
                                 }
@@ -200,7 +202,7 @@ export default class Home extends Component {
                                     this.setState({popUpOnTime: true, stateTextPopUp: 'Đã hết giờ họp'}); 
                                 }else {
                                     if (indexCountDown == -1) {
-                                        this.countDownArray.push({hours, minutes, seconds, idRoom: idRoom, idTimeOut: this.idInterval, distance: distance, name: e.name })
+                                        this.countDownArray.push({hours, minutes, seconds, idRoom: idRoom, idTimeOut: this.idInterval, distance: distance, name: e.name, cancel: e.cancel,  })
                                     }else{
                                         this.countDownArray[indexCountDown].distance = distance
                                         this.countDownArray[indexCountDown].hours = hours
@@ -617,14 +619,24 @@ export default class Home extends Component {
             });
         }
 
-        // this.state.data.some((e, i) => {
-        //     if(e. == this.idRoomReview) {
-        //         bookTime = e.bookTime
-        //         return true;
-        //     }
-        // })
+        this.state.data.some((e, i) => {
+            if(e.id == this.idRoomReview) {
+                bookTime = e.bookTime
+                return true;
+            }
+        })
+        
+        bookTime.some((e, i) => {
+            if(e.idBooking == this.idBooking) {
+                bookTime[i].cancel = "true"
+                return true;
+            }
+        })
+        
+        // console.log(bookTime)
 
-        // firebaseDB.rejectRoom()
+
+        firebaseDB.rejectRoom(this.idRoomReview, bookTime)
         this.setState({popUpOnTime: false});
     }
 
@@ -701,7 +713,7 @@ export default class Home extends Component {
                                     <View style={{flex: 0.15, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
                                             <View style={{flex: 0.2}}></View>
                                             <TouchableOpacity onPress={() => this.setModalVisible(false)}>
-                                            <Text style={{color: '#E66996', fontWeight: '600'}}>CANCEL</Text>
+                                                <Text style={{color: '#E66996', fontWeight: '600'}}>CANCEL</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() => this.sendComment()}>
                                                 <Text style={{color: '#E66996', fontWeight: '600'}}>SEND COMMENT</Text>
@@ -760,6 +772,7 @@ export default class Home extends Component {
                                 const hours = findIndexTimeCountDown != -1 ? this.countDownArray[findIndexTimeCountDown].hours : 0;
                                 const minutes = findIndexTimeCountDown != -1 ? this.countDownArray[findIndexTimeCountDown].minutes : 0;
                                 const seconds = findIndexTimeCountDown != -1 ? this.countDownArray[findIndexTimeCountDown].seconds : 0;
+                                const distance = findIndexTimeCountDown != -1 ? this.countDownArray[findIndexTimeCountDown].distance : 0;
                                 return (
                                 <View style={{flex: 1, marginTop: 10}}>
                                     <View style={styles.timeline}>
@@ -784,7 +797,7 @@ export default class Home extends Component {
                                                 <Text style={{color: 'purple'}}>{`Room ${item.roomNumber}`} - {`Floor ${item.floor}`}</Text>
                                                 <View style={{flexDirection: 'row'}}>
                                                     <View style={{flex: 0.35, flexDirection: 'row', justifyContent: 'space-between'}}>
-                                                        <IconM name={'circle'} size={20} color={'#2ecc71'}/>
+                                                        <IconM name={'circle'} size={20} color={distance >= 0 ? 'green' : 'red'}/>
                                                         <Text>{`${hours}:${minutes}:${seconds}`}</Text>
                                                     </View>
                                                 </View>

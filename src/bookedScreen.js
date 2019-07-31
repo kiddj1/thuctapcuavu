@@ -27,7 +27,7 @@ export default class BookedScreen extends Component {
             if(this.props.bookTime.length == 0) this.setState({data: []})
 
             this.props.bookTime.map((e, i) => {
-                if(e.endTime != null && e.endTime - moment().valueOf() > 0){
+                if(e.endTime != null && e.endTime - moment().valueOf() > 0 && e.cancel != 'true'){
                     this.data.push(e)
                 }
                 if(i == this.props.bookTime.length - 1) 

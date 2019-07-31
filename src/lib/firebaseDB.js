@@ -56,9 +56,9 @@ export function readDataChange(callback, uid) {
     })
 }
 
-export function rejectRoom(data){
-    firebase.database().ref(`${data.id}/`).update({
-        bookTime: data.time,
+export function rejectRoom(id, data){
+    firebase.database().ref(`${id}/`).update({
+        bookTime: data,
     });
 }
 

@@ -75,7 +75,7 @@ export default class TopBooking extends Component {
                       <Icon name='md-trophy' size={26} />
                     </View>
                     <View style={{flex: 0.4}}>
-                      <Text style={{color: 'white', fontWeight: '600'}}>LEADERBOARD</Text>
+                      <Text style={{color: 'white', fontWeight: '600'}}>RANKING</Text>
                     </View>
                   </View>
                 </View>

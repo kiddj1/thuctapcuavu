@@ -84,6 +84,7 @@ export default class BookingScreen extends Component {
                 a.set({'second': 0, 'millisecond': 0});
 
                 checkExistRoomBooking.some((e, i) => {
+                    if(e.cancel == 'true') return
                     let startTime = moment(e.time)
                     let endTime = moment(e.endTime) 
                     startTime.set({'second': 0, 'millisecond': 0})
@@ -217,7 +218,15 @@ export default class BookingScreen extends Component {
             uid: this.state.uid,
         }
 
-        let dataBookTime = {time: this.startTimeMili, uidUser: this.state.uid, endTime: this.endTimeMili, service: service, idBooking: moment().unix()}
+        //BookTime data
+        let dataBookTime = {
+            time: this.startTimeMili, 
+            uidUser: this.state.uid, 
+            endTime: this.endTimeMili, 
+            service: service, 
+            idBooking: moment().unix(), 
+            cancel: 'false',
+        }
         
         let bookRoom = {
             time:  data.bookTime === null ? [dataBookTime] : [dataBookTime].concat(data.bookTime),
